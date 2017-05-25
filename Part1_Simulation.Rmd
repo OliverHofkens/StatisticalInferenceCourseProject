@@ -41,8 +41,32 @@ g
 We can see that the mean and standard deviation are around 5 for a lambda of 0.2, 
 which fits the theoretical values (1/lambda).
 
+Let's generate 1000 random exponentials of 50 samples each for our simulation:
 ```{r params}
 nSimulations <- 1000
+
+# Simulate 1000 random exponentials of 50 samples
+sims <- replicate(nSimulations, rexp(50, rate = lambda))
+```
+
+### Mean: Sample vs Theoretical
+
+We calculate the mean of each simulation, and plot the results:
+```{r}
+# calculate the mean of each simulation
+means <- apply(sims, 2, mean)
+mua <- mean(means)
+sda <- sd(means) 
+
+means <- data.frame(means)
+
+g <- ggplot(means, aes(means)) + 
+    geom_histogram(aes(y = ..density..)) +
+    geom_vline(aes(xintercept = mua, color = 'mean')) + 
+    geom_vline(aes(xintercept = mua + sda, color = 'stddev')) +
+    geom_vline(aes(xintercept = mua - sda, color = 'stddev')) +
+    stat_function(fun = dnorm, args = list(mean = mua, sd = sda))
+g
 ```
 
 ```{r theoretical}
