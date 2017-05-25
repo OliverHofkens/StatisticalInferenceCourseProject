@@ -1,0 +1,51 @@
+---
+title: "Statistical Inference Project Part 1"
+author: "Oliver Hofkens"
+date: "25 May 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1: Simulation Exercise
+
+In this report, 1000 random exponentials are simulated and the distribution
+of their averages is investigated. The sample mean and variance are compared to 
+the theoretical statistics, and it is shown that the distribution is approximately
+normal.
+
+### Simulations
+
+Let's start by taking a look at the general form of an exponential.
+```{r exp}
+library(ggplot2)
+
+set.seed(123456789)
+lambda <- 0.2
+
+exampleExp <- rexp(1000, rate = lambda)
+exampleExpStats <- summary(exampleExp)
+exampleExp <- data.frame(exampleExp)
+
+g <- ggplot(exampleExp, aes(exampleExp)) + 
+    geom_histogram() + 
+    geom_vline(aes(xintercept = mean(exampleExp), color = 'mean')) + 
+    geom_vline(aes(xintercept = sd(exampleExp), color = 'stddev')) +
+    xlab('value') + 
+    scale_x_continuous(breaks = seq(0, 30, 5))
+g
+```
+
+We can see that the mean and standard deviation are around 5 for a lambda of 0.2, 
+which fits the theoretical values (1/lambda).
+
+```{r params}
+nSimulations <- 1000
+```
+
+```{r theoretical}
+mu0 <- 1/lambda
+sd0 <- 1/lambda
+```
