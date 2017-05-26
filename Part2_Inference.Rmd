@@ -2,7 +2,9 @@
 title: "Statistical Inference Project Part 2"
 author: "Oliver Hofkens"
 date: "5/26/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -80,4 +82,5 @@ doses stimulate bigger length.
 
 ### Assumptions
 
-* 
+* The guinea pigs in this experiment were randomly picked from a population.
+* Each observation in the dataset is a different guinea pig.
