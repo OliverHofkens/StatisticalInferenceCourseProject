@@ -19,7 +19,7 @@ normal.
 ### Simulations
 
 Let's start by taking a look at the general form of an exponential.
-```{r exp}
+```{r exp, message=FALSE}
 library(ggplot2)
 
 set.seed(123456789)
@@ -38,21 +38,22 @@ g <- ggplot(exampleExp, aes(exampleExp)) +
 g
 ```
 
-We can see that the mean and standard deviation are around 5 for a lambda of 0.2, 
+We can see that the mean and standard deviation are `r mean(exampleExp$exampleExp)` and `r sd(exampleExp$exampleExp)` for a lambda of `r lambda`, 
 which fits the theoretical values (1/lambda).
 
-Let's generate 1000 random exponentials of 50 samples each for our simulation:
+Let's generate 1000 random exponentials of 40 samples each for our simulation:
 ```{r params}
 nSimulations <- 1000
+nSamples <- 40
 
-# Simulate 1000 random exponentials of 50 samples
-sims <- replicate(nSimulations, rexp(50, rate = lambda))
+# Simulate 1000 random exponentials of 40 samples
+sims <- replicate(nSimulations, rexp(nSamples, rate = lambda))
 ```
 
-### Mean: Sample vs Theoretical
+Then let's calculate the mean, standard deviation, and variance and plot the 
+distribution of sample means of the simulations.
 
-We calculate the mean of each simulation, and plot the results:
-```{r}
+```{r simdist, message=FALSE}
 # calculate the mean of each simulation
 means <- apply(sims, 2, mean)
 mua <- mean(means)
@@ -65,11 +66,31 @@ g <- ggplot(means, aes(means)) +
     geom_vline(aes(xintercept = mua, color = 'mean')) + 
     geom_vline(aes(xintercept = mua + sda, color = 'stddev')) +
     geom_vline(aes(xintercept = mua - sda, color = 'stddev')) +
-    stat_function(fun = dnorm, args = list(mean = mua, sd = sda))
+    stat_function(fun = dnorm, args = list(mean = mua, sd = sda)) +
+    scale_x_continuous(breaks = 1:10)
 g
 ```
 
-```{r theoretical}
+### Mean: Sample vs Theoretical
+
+On first sight we can see that the distribution of sample means looks normal, with the mean at `r mua`. 
+
+```{r theoreticalmean}
 mu0 <- 1/lambda
-sd0 <- 1/lambda
+diff <- abs(mu0 - mua)
 ```
+
+The theoretical mean is `r mu0`, so the mean of sample means is only off by `r diff`.
+
+### Variance: Sample vs Theoretical
+
+```{r theoreticalvariance} 
+sd0 <- 1/lambda/sqrt(nSamples)
+var0 <- sd0^2
+
+vara <- var(means)
+
+diff <- abs(var0 - vara)
+```
+
+The theoretical variance is `r var0` and our simulation variance is `r vara`, so the variance of sample means is only off by `r diff`.
