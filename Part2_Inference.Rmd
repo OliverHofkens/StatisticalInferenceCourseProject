@@ -1,0 +1,83 @@
+---
+title: "Statistical Inference Project Part 2"
+author: "Oliver Hofkens"
+date: "5/26/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Part 1: Basic Inferential Data Analysis
+
+In this report, we will compare the length of odontoblasts (cells responsible for tooth growth)
+in 60 guinea pig by supplement and dose. The data comes from the ToothGrowth dataset in R.
+
+### Data Summary & Exploratory Analysis 
+
+We load the data and take a quick look at it:
+
+```{r}
+data <- ToothGrowth
+str(data)
+```
+```{r}
+summary(data)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+library(ggplot2)
+
+g <- ggplot(data, aes(dose, len, colour = supp)) +
+    geom_point() +
+    geom_smooth()
+g
+```
+
+This scatterplot (with overlaid smoothed means) suggests that a higher dose will 
+result in bigger length, and that orange juice has a bigger impact than vitamin C 
+at lower doses.
+
+### Hypothesis Testing
+
+#### 1. Does OJ stimulate bigger length than VC at doses lower than 1mg?
+
+```{r}
+lowdoses <- subset(data, dose <= 1)
+t.test(len ~ supp ,lowdoses, alternative = "greater")
+```
+A p-value of 0.0021 means we can confidently reject the null hypothesis that 
+there is no real difference in length between 2 supplements at low doses, and we 
+accept our alternative hypothesis that OJ stimulates bigger length at doses lower 
+than 1mg. 
+
+#### 2. Does a higher dose of any supplement stimulate bigger length?
+
+##### 2a. Doses of 1mg and smaller
+```{r}
+t.test(len ~ dose, lowdoses, alternative = "less")
+```
+
+Again, such a small P-value means we can confidently say that we're right, bigger 
+doses stimulate bigger length.
+
+#### 2b. Doses of 1mg and up
+
+```{r}
+highdoses <- subset(data, dose >= 1)
+t.test(len ~ dose, highdoses, alternative = "less")
+```
+
+Again, such a small P-value means we can confidently say that we're right, bigger 
+doses stimulate bigger length.
+
+### Conclusions
+
+* A higher dose (independent of supplement) results in bigger length.
+* In doses of 0.5 and 1 mg, OJ shows a bigger increase in length than VC.
+
+### Assumptions
+
+* 

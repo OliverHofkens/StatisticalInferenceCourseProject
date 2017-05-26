@@ -2,7 +2,9 @@
 title: "Statistical Inference Project Part 1"
 author: "Oliver Hofkens"
 date: "25 May 2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -94,3 +96,18 @@ diff <- abs(var0 - vara)
 ```
 
 The theoretical variance is `r var0` and our simulation variance is `r vara`, so the variance of sample means is only off by `r diff`.
+
+### Distribution
+
+If we subtract the mean and divide by the standard error, we 'normalize' our distribution. By doing this and overlaying the standard normal, we should get a good idea if our distribution is normal:
+
+```{r distribution, message=FALSE}
+normalized <- as.data.frame((means$means - mua) / sda)
+
+g <- ggplot(normalized, aes(normalized)) + 
+    geom_histogram(aes(y = ..density..)) +
+    stat_function(fun = dnorm)
+g
+```
+
+As you can see, the distribution of our simulation means fits very nicely into the standard normal distribution.
